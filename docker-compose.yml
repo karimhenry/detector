@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  rtsp-server1:
+    build: ./rtsp-server
+    ports:
+    - "8554:8554"
+    expose:
+      - 8554
+    volumes:
+      - ./rtsp-server:/code
+ 
+  inference1:
+    build: ./yolov5-inference
+    ports:
+      - "8000:5000"
+    volumes:
+      - ./yolov5-inference:/code
+    environment:
+      FLASK_DEBUG: "true"
+    depends_on:
+      - rtsp-server1
+      - redis
+
+  redis:
+    image: "redis:alpine"
+  
