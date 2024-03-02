@@ -9,8 +9,8 @@ This project implements a solution that utilizes Docker containers to process vi
 - Python script: Triggers inference on the Flask container and retrieves results.
 # Functionalities:
 
-1. The RTSP container continuously streams a video.
-2. The Inference Flask container:
+1. The RTSP container continuously streams a video through the command run in `rtsp-server/Dockerfile`
+2. The Inference Flask container `yolov5-inference/main.py` applies this logic:
     - Receives requests.
     - Loads a YOLOv5 model.
     - Captures a frame from the RTSP stream.
@@ -19,7 +19,7 @@ This project implements a solution that utilizes Docker containers to process vi
     - Saves the processed image to an external directory.
     - Returns the path to the saved image in the response.
     - Captures the path for last frame streamed and caches it into redis db.
-3. The Python script sends a request to the Inference Flask container and prints the path to the output image.
+3. The Python script `request.py` sends a request to the Inference Flask container and prints the path to the output image.
 # Implementation:
 
 Docker Compose is used to manage and orchestrate the containers.
