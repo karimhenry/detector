@@ -9,7 +9,9 @@ services:
       - 8554
     volumes:
       - ./rtsp-server:/code
- 
+    environment:
+      - MP4_FILENAME=people.mp4
+      
   inference1:
     build: ./yolov5-inference
     ports:

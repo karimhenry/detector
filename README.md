@@ -32,7 +32,7 @@ Easy integration with other applications.
 # Getting Started:
 
 - Clone this repository.
-- Put the video of interest inside the `rtsp-server/videos`    
+- Put the video of interest inside the `rtsp-server/videos` and set `MP4_FILENAME` environment variable to be the same name as video of interest.   
 - Set the `PERSISTANT` environment variable in the `docker-compose.yml` file to the location where you clone this repo.
 - Build and start the containers using `docker-compose up`.
 Run the provided Python script to trigger inference and see the output image path.
