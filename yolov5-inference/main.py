@@ -1,53 +1,34 @@
-import time
 import os
 import redis
-from flask import Flask
-import subprocess
+from flask import Flask, make_response, render_template, send_file
 import datetime
 
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='templates')
 cache = redis.Redis(host='redis', port=6379)
+persistant = os.environ['PERSISTANT']
 
-@app.route('/')
+@app.route('/', methods=["GET"] )
 def infer():
-    # Get the current date and time
     now = datetime.datetime.now()
-    # Convert the date and time to an integer using the timestamp() method
     timestamp = str(int(now.timestamp()))
-
-    # Print the integer value
-    # print(timestamp)
-
-    # frame = 
-    os.system(f"ffmpeg -i rtsp://rtsp-server1:8554/test.sdp -vframes 1 data/images/output_file{timestamp}.jpg -y")
-    t1= os.system(f"python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source data/images/output_file{timestamp}.jpg --exist-ok")
-    # return str(t1)
-    output_path = f"C:/Users/Karim Henry/Desktop/tahaluf/yolo_detector/yolov5-inference/runs/detect/exp/output_file{timestamp}.jpg"
-    cache.set('path', output_path)
-# True
-    # cache.get('foo')
-    return cache.get('path')
-
+    t1=0
+    t2=0
+    t1 = os.system(f"ffmpeg -i rtsp://rtsp-server1:8554/test.sdp -vframes 1 data/images/output_file{timestamp}.jpg -y")
+    t2 = os.system(f"python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source data/images/output_file{timestamp}.jpg --exist-ok")
+    if t1 ==0 & t2==0:
+        persistant = os.environ['PERSISTANT']
+        output_path = f"{persistant}/yolo_detector/yolov5-inference/runs/detect/exp/output_file{timestamp}.jpg"
+        cache.set('path', output_path)
+        response = make_response(f"<h1>Output Path: </h1><h3>{output_path}</h3>", 200)
+        output_path = output_path.split("yolov5-inference/")[-1]
+        return send_file(output_path)
+        # # return render_template("index.html", image_path=output_path)
+        # return render_template("index.html", path=output_path)
+    else:
+        response = make_response("<h1>Internal Server Error</h1>", 500)
+        return response
 
 @app.route('/loc')
 def identify():
     return cache.get('path')
-
-    # return "c://users/.."
-
-# @app.route('/loc1')
-# def images(image):
-#     return "c://users/.."
-    # t1= os.system("python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source data/images/bus.jpg")
-    # return str(t1)
-
-# def hello():
-#     # count = get_hit_count()
-#     message ="hello"
-#     result = subprocess.run(["ls", "-l"], capture_output=True, text=True)
-#     # print(result)
-#     with open('output.txt',"w") as f:
-#         f.write(str(count))
-#     # return 'Hello KIMO World! I have been seen {} times.\n'.format(count)
-#     return result.stdout

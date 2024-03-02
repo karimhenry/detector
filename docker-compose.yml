@@ -17,7 +17,8 @@ services:
     volumes:
       - ./yolov5-inference:/code
     environment:
-      FLASK_DEBUG: "true"
+      - FLASK_DEBUG=1
+      - PERSISTANT=C:/Users/Karim Henry/Desktop/tahaluf/ 
     depends_on:
       - rtsp-server1
       - redis
